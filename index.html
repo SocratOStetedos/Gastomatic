@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>API Test Automation — Portfolio</title>
+<title>GasTomatic - API Test Automatio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -378,8 +378,7 @@
     <li><a href="#structure">Structure</a></li>
     <li><a href="#code">Code</a></li>
     <li><a href="#cicd">CI/CD</a></li>
-    <li><a href="#entretien">Entretien</a></li>
-    <li><a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a></li>
+    <li><a href="https://socratostetedos.github.io/Gaspard_Danger_Portfolio/" target="_blank" rel="noopener">Portfolio ↗</a></li>
   </ul>
 </nav>
 
@@ -635,60 +634,7 @@ BASE_URL = <span class="st">"https://jsonplaceholder.typicode.com"</span>
   </div>
 </section>
 
-<!-- ENTRETIEN -->
-<section id="entretien">
-  <div class="section-inner">
-    <h2 class="section-title">Questions d'entretien</h2>
-    <p class="section-sub">Clique pour révéler les réponses — les questions les plus fréquentes</p>
-    <div class="interview-cards">
-      <div class="interview-card">
-        <button class="interview-q" onclick="toggle(this)">
-          <span class="q-badge">Q&amp;A</span>
-          <span class="q-text">Pourquoi avez-vous utilisé des fixtures PyTest au lieu de dupliquer les données dans chaque test ?</span>
-        </button>
-        <div class="interview-a">
-          Les <strong>fixtures</strong> centralisent les données de test dans <code>conftest.py</code>. Si je veux changer un payload, je le modifie à un seul endroit au lieu de le chercher dans 10 tests. C'est le principe <strong>DRY (Don't Repeat Yourself)</strong>. De plus, PyTest les injecte automatiquement dès qu'un test déclare le nom de la fixture en paramètre — c'est élégant et maintenable.
-        </div>
-      </div>
-      <div class="interview-card">
-        <button class="interview-q" onclick="toggle(this)">
-          <span class="q-badge">Q&amp;A</span>
-          <span class="q-text">Pourquoi séparer le client HTTP dans un fichier utils/ plutôt que d'appeler requests directement ?</span>
-        </button>
-        <div class="interview-a">
-          C'est le principe de la <strong>séparation des responsabilités</strong>. Si l'URL de base change, ou si on ajoute des headers d'authentification, je modifie uniquement <code>api_client.py</code> — pas chaque test. Mes tests restent <strong>lisibles et focalisés</strong> sur ce qu'ils vérifient, pas sur les détails HTTP.
-        </div>
-      </div>
-      <div class="interview-card">
-        <button class="interview-q" onclick="toggle(this)">
-          <span class="q-badge">Q&amp;A</span>
-          <span class="q-text">Quelle est la différence entre un test positif et un test négatif ? Donnez un exemple.</span>
-        </button>
-        <div class="interview-a">
-          Un <strong>test positif</strong> vérifie que tout fonctionne dans les conditions normales — ex : <em>GET /posts/1 retourne 200 avec les bons champs</em>. Un <strong>test négatif</strong> vérifie le comportement en cas d'erreur — ex : <em>GET /posts/9999 retourne 404</em>. Les deux sont essentiels. Dans le fichier <code>test_errors.py</code>, je me concentre sur les cas négatifs et les cas limites.
-        </div>
-      </div>
-      <div class="interview-card">
-        <button class="interview-q" onclick="toggle(this)">
-          <span class="q-badge">Q&amp;A</span>
-          <span class="q-text">Expliquez ce qu'est le CI/CD et pourquoi c'est important.</span>
-        </button>
-        <div class="interview-a">
-          <strong>CI (Continuous Integration)</strong> = chaque fois qu'un développeur pousse du code, les tests se lancent automatiquement. Si un test échoue, l'équipe le sait immédiatement avant que ça parte en production. <strong>CD (Continuous Deployment)</strong> pousse plus loin en automatisant aussi le déploiement. Dans ce projet, GitHub Actions fait le CI : à chaque push, il installe Python, les dépendances, lance les tests et archive le rapport.
-        </div>
-      </div>
-      <div class="interview-card">
-        <button class="interview-q" onclick="toggle(this)">
-          <span class="q-badge">Q&amp;A</span>
-          <span class="q-text">Comment feriez-vous pour tester une API avec authentification JWT ?</span>
-        </button>
-        <div class="interview-a">
-          J'ajouterais une fixture <code>auth_headers</code> dans <code>conftest.py</code> qui fait d'abord un POST sur l'endpoint de login pour récupérer le token, puis retourne les headers <code>{"Authorization": "Bearer &lt;token&gt;"}</code>. Je modifierais <code>api_client.py</code> pour accepter un paramètre optionnel <code>headers=None</code>. Tous les tests qui nécessitent une auth ajoutent simplement cette fixture en paramètre.
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <!-- AMÉLIORATIONS -->
 <section style="background: var(--surface); border-top: 1px solid var(--border);">
