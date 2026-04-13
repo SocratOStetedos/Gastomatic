@@ -1,0 +1,52 @@
+# .github/workflows/ci.yml
+# ─────────────────────────────────────────────────────────────────
+# Pipeline CI/CD avec GitHub Actions
+#
+# Ce fichier configure un pipeline automatique qui :
+# 1. Se déclenche à chaque push ou pull request sur main
+# 2. Installe les dépendances Python
+# 3. Lance tous les tests
+# 4. Sauvegarde le rapport HTML comme "artifact" téléchargeable
+#
+# C'est l'automatisation réelle utilisée dans les entreprises !
+# ─────────────────────────────────────────────────────────────────
+
+name: Tests API Automatisés   # Nom affiché dans l'onglet "Actions" de GitHub
+
+# Déclencheurs : quand est-ce que ce pipeline s'exécute ?
+on:
+  push:
+    branches: [ "main" ]        # À chaque push sur main
+  pull_request:
+    branches: [ "main" ]        # À chaque Pull Request vers main
+
+jobs:
+  run-tests:                    # Nom du "job" (tâche)
+    runs-on: ubuntu-latest      # Sur quelle machine ? Ubuntu (gratuit sur GitHub)
+
+    steps:
+      # Étape 1 : Télécharger le code du dépôt
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      # Étape 2 : Installer Python
+      - name: 🐍 Configurer Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Étape 3 : Installer les dépendances
+      - name: 📦 Installer les dépendances
+        run: pip install -r requirements.txt
+
+      # Étape 4 : Lancer les tests
+      - name: 🧪 Lancer les tests PyTest
+        run: pytest tests/ --html=report.html --self-contained-html -v
+
+      # Étape 5 : Sauvegarder le rapport HTML (même en cas d'échec)
+      - name: 📄 Sauvegarder le rapport de test
+        uses: actions/upload-artifact@v4
+        if: always()            # "always" = même si les tests échouent
+        with:
+          name: rapport-de-tests
+          path: report.html

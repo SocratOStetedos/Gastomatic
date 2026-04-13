@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Test Automation — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f12;
+    --surface: #161a1f;
+    --surface2: #1e242c;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaed;
+    --muted: #8a9099;
+    --accent: #4ade80;
+    --accent2: #22d3ee;
+    --accent3: #f59e0b;
+    --red: #f87171;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(13,15,18,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6rem 2.5rem 4rem;
+    max-width: 900px; margin: 0 auto;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 2rem; height: 1px;
+    background: var(--accent);
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-tags {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-bottom: 2.5rem;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2rem;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .tag.green { border-color: rgba(74,222,128,0.3); color: var(--accent); background: rgba(74,222,128,0.06); }
+  .tag.blue  { border-color: rgba(34,211,238,0.3); color: var(--accent2); background: rgba(34,211,238,0.06); }
+  .tag.amber { border-color: rgba(245,158,11,0.3); color: var(--accent3); background: rgba(245,158,11,0.06); }
+
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--mono); font-size: 0.8rem;
+    text-decoration: none; border-radius: 6px;
+    transition: all 0.2s; cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .btn-primary {
+    background: var(--accent); color: #0a1a10; font-weight: 500;
+  }
+  .btn-primary:hover { background: #6be89a; transform: translateY(-1px); }
+  .btn-ghost {
+    border: 1px solid var(--border2); color: var(--muted); background: transparent;
+  }
+  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2.5rem;
+  }
+  .stats-inner {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 1rem;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2rem; font-weight: 600;
+    color: var(--accent); line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-label {
+    font-size: 0.75rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-family: var(--mono);
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 2.5rem; }
+  .section-inner { max-width: 900px; margin: 0 auto; }
+  .section-title {
+    font-family: var(--serif);
+    font-size: 1.8rem; font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    color: var(--muted); font-size: 0.9rem; margin-bottom: 3rem;
+  }
+
+  /* ── FILE TREE ── */
+  .file-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .file-tree-header {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #f87171; }
+  .dot-y { background: var(--accent3); }
+  .dot-g { background: var(--accent); }
+  .file-tree-title { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-left: 0.5rem; }
+  .tree-body { padding: 1.25rem 1.5rem; font-family: var(--mono); font-size: 0.82rem; line-height: 2; }
+  .tree-item { display: flex; align-items: center; gap: 0.6rem; }
+  .tree-item .indent { color: var(--border2); user-select: none; }
+  .fi { color: var(--muted); }
+  .fi.py { color: var(--accent2); }
+  .fi.cfg { color: var(--accent3); }
+  .fi.yml { color: #c084fc; }
+  .fi.sh  { color: var(--accent); }
+  .fi.md  { color: var(--accent3); }
+  .fi.dir { color: var(--text); font-weight: 500; }
+  .tree-comment { color: #4a5568; font-size: 0.72rem; margin-left: 0.75rem; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.6rem 1.25rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-filename { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+  .code-lang { font-family: var(--mono); font-size: 0.68rem; color: var(--accent2); background: rgba(34,211,238,0.1); padding: 0.2rem 0.6rem; border-radius: 3px; }
+  .code-body { padding: 1.25rem 1.5rem; overflow-x: auto; }
+  pre { font-family: var(--mono); font-size: 0.8rem; line-height: 1.8; }
+  .kw  { color: #c084fc; }
+  .fn  { color: var(--accent2); }
+  .st  { color: var(--accent3); }
+  .cm  { color: #4a5568; font-style: italic; }
+  .de  { color: var(--accent); }
+  .nm  { color: var(--text); }
+  .num { color: #f87171; }
+
+  /* ── FEATURE CARDS ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+  .feature-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .feature-icon.green { background: rgba(74,222,128,0.1); }
+  .feature-icon.blue  { background: rgba(34,211,238,0.1); }
+  .feature-icon.amber { background: rgba(245,158,11,0.1); }
+  .feature-icon.purple{ background: rgba(192,132,252,0.1); }
+  .feature-card h3 { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem; }
+  .feature-card p  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── CI/CD PIPELINE ── */
+  .pipeline {
+    display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow-x: auto;
+  }
+  .pipe-step {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    flex: 1; min-width: 100px;
+    padding: 0.75rem 0.5rem;
+  }
+  .pipe-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; margin-bottom: 0.6rem;
+    border: 1px solid var(--border2);
+  }
+  .pipe-step h4 { font-size: 0.8rem; font-weight: 500; margin-bottom: 0.2rem; }
+  .pipe-step p  { font-size: 0.7rem; color: var(--muted); }
+  .pipe-arrow {
+    font-family: var(--mono); color: var(--muted);
+    font-size: 1rem; flex-shrink: 0;
+    padding: 0 0.25rem;
+  }
+
+  /* ── INTERVIEW SECTION ── */
+  .interview-cards { display: flex; flex-direction: column; gap: 1rem; }
+  .interview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .interview-q {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none; background: none; width: 100%;
+    text-align: left;
+  }
+  .interview-q:hover { background: var(--surface2); }
+  .q-badge {
+    font-family: var(--mono); font-size: 0.68rem;
+    background: rgba(74,222,128,0.1); color: var(--accent);
+    border: 1px solid rgba(74,222,128,0.2);
+    padding: 0.2rem 0.5rem; border-radius: 4px;
+    white-space: nowrap; flex-shrink: 0; margin-top: 0.1rem;
+  }
+  .q-text { font-size: 0.9rem; color: var(--text); flex: 1; }
+  .interview-a {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    font-size: 0.85rem; color: var(--muted);
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .interview-a.open { display: block; }
+  .interview-a strong { color: var(--accent); font-weight: 500; }
+
+  /* ── IMPROVEMENTS ── */
+  .improvements-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+  .improvement-item {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem;
+  }
+  .imp-badge {
+    font-family: var(--mono); font-size: 0.65rem;
+    padding: 0.2rem 0.5rem; border-radius: 3px;
+    white-space: nowrap; flex-shrink: 0; margin-top: 0.15rem;
+  }
+  .imp-badge.easy   { background: rgba(74,222,128,0.1);  color: var(--accent);  border: 1px solid rgba(74,222,128,0.2); }
+  .imp-badge.medium { background: rgba(245,158,11,0.1);  color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+  .imp-badge.hard   { background: rgba(192,132,252,0.1); color: #c084fc;        border: 1px solid rgba(192,132,252,0.2); }
+  .improvement-item p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+  .improvement-item p strong { color: var(--text); font-weight: 500; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    text-align: center;
+    font-size: 0.8rem; color: var(--muted);
+    font-family: var(--mono);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    section { padding: 3rem 1.25rem; }
+    .stats-inner { grid-template-columns: repeat(2,1fr); }
+    .hero { padding: 5rem 1.25rem 3rem; }
+    .pipeline { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .pipe-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">pytest-api-automation</span>
+  <ul class="nav-links">
+    <li><a href="#structure">Structure</a></li>
+    <li><a href="#code">Code</a></li>
+    <li><a href="#cicd">CI/CD</a></li>
+    <li><a href="#entretien">Entretien</a></li>
+    <li><a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Projet Portfolio — QA Automation</div>
+  <h1>Tests d'API REST<br><em>automatisés</em> avec Python</h1>
+  <p class="hero-sub">
+    Suite de tests professionnelle utilisant PyTest et Requests pour tester une API REST réelle —
+    avec pipeline CI/CD intégré sur GitHub Actions.
+  </p>
+  <div class="hero-tags">
+    <span class="tag green">Python 3.11</span>
+    <span class="tag green">PyTest</span>
+    <span class="tag blue">Requests</span>
+    <span class="tag blue">pytest-html</span>
+    <span class="tag amber">GitHub Actions</span>
+    <span class="tag">JSONPlaceholder API</span>
+  </div>
+  <div class="hero-cta">
+    <a href="https://github.com" target="_blank" class="btn btn-primary">Voir sur GitHub</a>
+    <a href="#structure" class="btn btn-ghost">Explorer le projet</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num">39</div>
+      <div class="stat-label">Tests écrits</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Fichiers de tests</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Méthodes HTTP</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">CI/CD</div>
+      <div class="stat-label">GitHub Actions</div>
+    </div>
+  </div>
+</div>
+
+<!-- FONCTIONNALITÉS -->
+<section>
+  <div class="section-inner">
+    <h2 class="section-title">Fonctionnalités</h2>
+    <p class="section-sub">Ce que le projet démontre concrètement</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon green">🌐</div>
+        <h3>Tests HTTP complets</h3>
+        <p>GET, POST, PUT, DELETE — toutes les méthodes CRUD testées sur une API réelle avec assertions précises.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon blue">✓</div>
+        <h3>Validation JSON</h3>
+        <p>Vérification des codes de statut, de la structure des données, des types et des champs obligatoires.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon amber">♻</div>
+        <h3>Fixtures PyTest</h3>
+        <p>Données de test centralisées dans <code style="font-size:0.78rem;color:var(--accent2)">conftest.py</code> et réutilisées dans tous les fichiers.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon purple">⚡</div>
+        <h3>Tests paramétrés</h3>
+        <p>Un seul test s'exécute sur plusieurs cas avec <code style="font-size:0.78rem;color:var(--accent2)">@pytest.mark.parametrize</code>.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">📊</div>
+        <h3>Rapport HTML</h3>
+        <p>Génération automatique d'un rapport visuel avec <code style="font-size:0.78rem;color:var(--accent2)">pytest-html</code> après chaque exécution.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon blue">🔄</div>
+        <h3>Pipeline CI/CD</h3>
+        <p>Les tests se lancent automatiquement sur GitHub Actions à chaque push. Zéro configuration manuelle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRUCTURE DES FICHIERS -->
+<section id="structure" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <h2 class="section-title">Architecture du projet</h2>
+    <p class="section-sub">Structure propre et séparation claire des responsabilités</p>
+    <div class="file-tree">
+      <div class="file-tree-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="file-tree-title">api-test-automation/</span>
+      </div>
+      <div class="tree-body">
+        <div class="tree-item"><span class="fi dir">📁 tests/</span><span class="tree-comment">— tous les fichiers de tests</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 conftest.py</span><span class="tree-comment">fixtures partagées (données réutilisables)</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 test_posts.py</span><span class="tree-comment">tests CRUD GET/POST/PUT/DELETE</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 test_users.py</span><span class="tree-comment">tests utilisateurs + relations</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 test_errors.py</span><span class="tree-comment">tests négatifs et cas limites</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 __init__.py</span></div>
+        <br>
+        <div class="tree-item"><span class="fi dir">📁 utils/</span><span class="tree-comment">— code réutilisable</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 api_client.py</span><span class="tree-comment">client HTTP centralisé (get/post/put/delete)</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi py">🐍 __init__.py</span></div>
+        <br>
+        <div class="tree-item"><span class="fi dir">📁 .github/workflows/</span></div>
+        <div class="tree-item"><span class="indent">│  </span><span class="fi yml">⚙ ci.yml</span><span class="tree-comment">pipeline GitHub Actions</span></div>
+        <br>
+        <div class="tree-item"><span class="fi cfg">⚙ pytest.ini</span><span class="tree-comment">configuration de PyTest</span></div>
+        <div class="tree-item"><span class="fi cfg">📦 requirements.txt</span><span class="tree-comment">dépendances Python</span></div>
+        <div class="tree-item"><span class="fi sh">▶ run_tests.sh</span><span class="tree-comment">script de lancement + rapport HTML</span></div>
+        <div class="tree-item"><span class="fi md">📄 README.md</span><span class="tree-comment">documentation du projet</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CODE -->
+<section id="code">
+  <div class="section-inner">
+    <h2 class="section-title">Extraits de code</h2>
+    <p class="section-sub">Les patterns clés utilisés dans le projet</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">utils/api_client.py — Client HTTP réutilisable</span>
+        <span class="code-lang">python</span>
+      </div>
+      <div class="code-body"><pre>
+<span class="kw">import</span> requests
+
+BASE_URL = <span class="st">"https://jsonplaceholder.typicode.com"</span>
+
+<span class="kw">def</span> <span class="fn">get_resource</span>(<span class="nm">endpoint</span>: str) -> requests.Response:
+    <span class="cm">"""Envoie une requête GET et retourne la réponse."""</span>
+    url = <span class="st">f"{BASE_URL}{endpoint}"</span>
+    <span class="kw">return</span> requests.<span class="fn">get</span>(url, timeout=<span class="num">10</span>)
+
+<span class="kw">def</span> <span class="fn">create_resource</span>(<span class="nm">endpoint</span>: str, <span class="nm">payload</span>: dict) -> requests.Response:
+    <span class="cm">"""Envoie une requête POST avec un payload JSON."""</span>
+    url = <span class="st">f"{BASE_URL}{endpoint}"</span>
+    <span class="kw">return</span> requests.<span class="fn">post</span>(url, json=payload, timeout=<span class="num">10</span>)</pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">tests/conftest.py — Fixtures partagées</span>
+        <span class="code-lang">python</span>
+      </div>
+      <div class="code-body"><pre>
+<span class="kw">import</span> pytest
+
+<span class="de">@pytest.fixture</span>
+<span class="kw">def</span> <span class="fn">sample_post_payload</span>():
+    <span class="cm">"""Données réutilisables pour créer un post."""</span>
+    <span class="kw">return</span> {
+        <span class="st">"title"</span>: <span class="st">"Mon titre de test"</span>,
+        <span class="st">"body"</span>:  <span class="st">"Contenu de l'article."</span>,
+        <span class="st">"userId"</span>: <span class="num">1</span>
+    }
+
+<span class="de">@pytest.fixture</span>
+<span class="kw">def</span> <span class="fn">invalid_post_id</span>():
+    <span class="cm">"""ID qui n'existe pas → doit déclencher un 404."""</span>
+    <span class="kw">return</span> <span class="num">9999</span></pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">tests/test_posts.py — Tests avec classes et fixtures</span>
+        <span class="code-lang">python</span>
+      </div>
+      <div class="code-body"><pre>
+<span class="kw">class</span> <span class="fn">TestGetPosts</span>:
+
+    <span class="kw">def</span> <span class="fn">test_get_single_post_has_required_fields</span>(self, <span class="nm">valid_post_id</span>):
+        <span class="cm">"""Vérifie que le JSON contient id, title, body, userId."""</span>
+        response = <span class="fn">get_resource</span>(<span class="st">f"/posts/{valid_post_id}"</span>)
+        data = response.<span class="fn">json</span>()
+
+        required_fields = [<span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"body"</span>, <span class="st">"userId"</span>]
+        <span class="kw">for</span> field <span class="kw">in</span> required_fields:
+            <span class="kw">assert</span> field <span class="kw">in</span> data, <span class="st">f"Champ manquant : '{field}'"</span></pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">tests/test_errors.py — Tests paramétrés (1 test × N cas)</span>
+        <span class="code-lang">python</span>
+      </div>
+      <div class="code-body"><pre>
+<span class="de">@pytest.mark.parametrize</span>(<span class="st">"endpoint"</span>, [
+    <span class="st">"/posts/99999"</span>,
+    <span class="st">"/users/99999"</span>,
+    <span class="st">"/comments/99999"</span>,
+])
+<span class="kw">def</span> <span class="fn">test_inexistant_resources_return_404</span>(self, <span class="nm">endpoint</span>):
+    <span class="cm">"""Ce test s'exécute 3 fois avec des valeurs différentes."""</span>
+    response = <span class="fn">get_resource</span>(endpoint)
+    <span class="kw">assert</span> response.status_code == <span class="num">404</span></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- CI/CD -->
+<section id="cicd" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <h2 class="section-title">Pipeline CI/CD</h2>
+    <p class="section-sub">Automatisation complète avec GitHub Actions — déclenché à chaque push</p>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-icon" style="background:rgba(74,222,128,0.08)">📤</div>
+        <h4>Push sur main</h4>
+        <p>ou Pull Request</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-icon" style="background:rgba(34,211,238,0.08)">📥</div>
+        <h4>Checkout</h4>
+        <p>code téléchargé</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-icon" style="background:rgba(34,211,238,0.08)">🐍</div>
+        <h4>Python 3.11</h4>
+        <p>env. installé</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-icon" style="background:rgba(245,158,11,0.08)">📦</div>
+        <h4>Dépendances</h4>
+        <p>pip install</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-icon" style="background:rgba(74,222,128,0.08)">🧪</div>
+        <h4>pytest</h4>
+        <p>39 tests lancés</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-icon" style="background:rgba(192,132,252,0.08)">📄</div>
+        <h4>Rapport HTML</h4>
+        <p>artifact uploadé</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENTRETIEN -->
+<section id="entretien">
+  <div class="section-inner">
+    <h2 class="section-title">Questions d'entretien</h2>
+    <p class="section-sub">Clique pour révéler les réponses — les questions les plus fréquentes</p>
+    <div class="interview-cards">
+      <div class="interview-card">
+        <button class="interview-q" onclick="toggle(this)">
+          <span class="q-badge">Q&amp;A</span>
+          <span class="q-text">Pourquoi avez-vous utilisé des fixtures PyTest au lieu de dupliquer les données dans chaque test ?</span>
+        </button>
+        <div class="interview-a">
+          Les <strong>fixtures</strong> centralisent les données de test dans <code>conftest.py</code>. Si je veux changer un payload, je le modifie à un seul endroit au lieu de le chercher dans 10 tests. C'est le principe <strong>DRY (Don't Repeat Yourself)</strong>. De plus, PyTest les injecte automatiquement dès qu'un test déclare le nom de la fixture en paramètre — c'est élégant et maintenable.
+        </div>
+      </div>
+      <div class="interview-card">
+        <button class="interview-q" onclick="toggle(this)">
+          <span class="q-badge">Q&amp;A</span>
+          <span class="q-text">Pourquoi séparer le client HTTP dans un fichier utils/ plutôt que d'appeler requests directement ?</span>
+        </button>
+        <div class="interview-a">
+          C'est le principe de la <strong>séparation des responsabilités</strong>. Si l'URL de base change, ou si on ajoute des headers d'authentification, je modifie uniquement <code>api_client.py</code> — pas chaque test. Mes tests restent <strong>lisibles et focalisés</strong> sur ce qu'ils vérifient, pas sur les détails HTTP.
+        </div>
+      </div>
+      <div class="interview-card">
+        <button class="interview-q" onclick="toggle(this)">
+          <span class="q-badge">Q&amp;A</span>
+          <span class="q-text">Quelle est la différence entre un test positif et un test négatif ? Donnez un exemple.</span>
+        </button>
+        <div class="interview-a">
+          Un <strong>test positif</strong> vérifie que tout fonctionne dans les conditions normales — ex : <em>GET /posts/1 retourne 200 avec les bons champs</em>. Un <strong>test négatif</strong> vérifie le comportement en cas d'erreur — ex : <em>GET /posts/9999 retourne 404</em>. Les deux sont essentiels. Dans le fichier <code>test_errors.py</code>, je me concentre sur les cas négatifs et les cas limites.
+        </div>
+      </div>
+      <div class="interview-card">
+        <button class="interview-q" onclick="toggle(this)">
+          <span class="q-badge">Q&amp;A</span>
+          <span class="q-text">Expliquez ce qu'est le CI/CD et pourquoi c'est important.</span>
+        </button>
+        <div class="interview-a">
+          <strong>CI (Continuous Integration)</strong> = chaque fois qu'un développeur pousse du code, les tests se lancent automatiquement. Si un test échoue, l'équipe le sait immédiatement avant que ça parte en production. <strong>CD (Continuous Deployment)</strong> pousse plus loin en automatisant aussi le déploiement. Dans ce projet, GitHub Actions fait le CI : à chaque push, il installe Python, les dépendances, lance les tests et archive le rapport.
+        </div>
+      </div>
+      <div class="interview-card">
+        <button class="interview-q" onclick="toggle(this)">
+          <span class="q-badge">Q&amp;A</span>
+          <span class="q-text">Comment feriez-vous pour tester une API avec authentification JWT ?</span>
+        </button>
+        <div class="interview-a">
+          J'ajouterais une fixture <code>auth_headers</code> dans <code>conftest.py</code> qui fait d'abord un POST sur l'endpoint de login pour récupérer le token, puis retourne les headers <code>{"Authorization": "Bearer &lt;token&gt;"}</code>. Je modifierais <code>api_client.py</code> pour accepter un paramètre optionnel <code>headers=None</code>. Tous les tests qui nécessitent une auth ajoutent simplement cette fixture en paramètre.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AMÉLIORATIONS -->
+<section style="background: var(--surface); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <h2 class="section-title">Idées d'améliorations</h2>
+    <p class="section-sub">Pour aller plus loin et enrichir le portfolio</p>
+    <div class="improvements-list">
+      <div class="improvement-item">
+        <span class="imp-badge easy">Facile</span>
+        <p><strong>pytest-cov</strong> — Mesure la couverture de code et affiche quelles lignes ne sont pas testées.</p>
+      </div>
+      <div class="improvement-item">
+        <span class="imp-badge easy">Facile</span>
+        <p><strong>Variables d'environnement</strong> — Mettre l'URL de base dans un .env pour tester dev/staging/prod.</p>
+      </div>
+      <div class="improvement-item">
+        <span class="imp-badge medium">Moyen</span>
+        <p><strong>pytest-mock</strong> — Simuler des erreurs réseau (timeout, 500) sans dépendre de l'API réelle.</p>
+      </div>
+      <div class="improvement-item">
+        <span class="imp-badge medium">Moyen</span>
+        <p><strong>API avec auth JWT</strong> — Tester une vraie API avec tokens d'authentification.</p>
+      </div>
+      <div class="improvement-item">
+        <span class="imp-badge medium">Moyen</span>
+        <p><strong>Faker</strong> — Générer des données de test aléatoires et réalistes à chaque exécution.</p>
+      </div>
+      <div class="improvement-item">
+        <span class="imp-badge hard">Avancé</span>
+        <p><strong>Locust</strong> — Ajouter des tests de performance et de charge sur l'API.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Projet portfolio — Automatisation de tests API &nbsp;·&nbsp; Python · PyTest · GitHub Actions</p>
+  <p style="margin-top:0.5rem"><a href="https://github.com" target="_blank">GitHub ↗</a> &nbsp;·&nbsp; JSONPlaceholder API</p>
+</footer>
+
+<script>
+function toggle(btn) {
+  const answer = btn.nextElementSibling;
+  answer.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

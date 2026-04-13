@@ -1,0 +1,14 @@
+# Dépendances du projet
+# Installe tout avec : pip install -r requirements.txt
+
+# Librairie HTTP pour faire des appels API
+requests==2.32.3
+
+# Framework de tests
+pytest==8.3.4
+
+# Plugin pour générer un rapport HTML lisible
+pytest-html==4.1.1
+
+# Plugin pour afficher la couverture de code (bonus)
+pytest-cov==6.0.0
