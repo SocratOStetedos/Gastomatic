@@ -349,6 +349,62 @@
   .improvement-item p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
   .improvement-item p strong { color: var(--text); font-weight: 500; }
 
+  /* ── LAB ── */
+  .lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media(max-width:700px){ .lab-grid { grid-template-columns: 1fr; } }
+  .test-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .test-btn {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.9rem 1rem;
+    cursor: pointer; text-align: left; width: 100%;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .test-btn:hover { border-color: var(--border2); background: var(--surface2); }
+  .test-btn.active { border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.04); }
+  .test-btn-method {
+    font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+    padding: 0.18rem 0.5rem; border-radius: 3px; flex-shrink: 0; margin-top: 0.1rem;
+  }
+  .m-get  { background: rgba(34,211,238,0.12); color: var(--accent2); }
+  .m-post { background: rgba(74,222,128,0.12); color: var(--accent); }
+  .m-del  { background: rgba(248,113,113,0.12); color: var(--red); }
+  .test-btn-info { display: flex; flex-direction: column; gap: 0.2rem; }
+  .test-btn-name { font-family: var(--mono); font-size: 0.78rem; color: var(--text); }
+  .test-btn-desc { font-size: 0.75rem; color: var(--muted); }
+  .terminal {
+    background: #0a0c0f; border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; min-height: 360px;
+    display: flex; flex-direction: column;
+  }
+  .terminal-header {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 1rem; background: var(--surface2);
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .terminal-title { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-left: 0.25rem; flex: 1; }
+  .run-btn {
+    font-family: var(--mono); font-size: 0.72rem;
+    background: rgba(74,222,128,0.12); color: var(--accent);
+    border: 1px solid rgba(74,222,128,0.25); border-radius: 4px;
+    padding: 0.25rem 0.75rem; cursor: pointer; transition: background 0.15s;
+  }
+  .run-btn:hover { background: rgba(74,222,128,0.2); }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .terminal-body {
+    flex: 1; padding: 1rem 1.25rem;
+    font-family: var(--mono); font-size: 0.76rem; line-height: 1.9;
+    overflow-y: auto; color: #8a9099;
+  }
+  .t-dim  { color: #3a4050; }
+  .t-info { color: var(--accent2); }
+  .t-fn   { color: #c084fc; }
+  .t-ok   { color: var(--accent); font-weight: 500; }
+  .t-fail { color: var(--red); font-weight: 500; }
+  .t-warn { color: var(--accent3); }
+  .t-data { color: #e8eaed; }
+  .t-line { display: block; }
+  .t-sep  { color: #1e3020; }
   /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--border);
@@ -378,6 +434,7 @@
     <li><a href="#structure">Structure</a></li>
     <li><a href="#code">Code</a></li>
     <li><a href="#cicd">CI/CD</a></li>
+    <li><a href="#lab" style="color:var(--accent)">Test (intéractions) </a></li>
     <li><a href="https://socratostetedos.github.io/Gaspard_Danger_Portfolio/" target="_blank" rel="noopener">Portfolio ↗</a></li>
   </ul>
 </nav>
@@ -635,6 +692,73 @@ BASE_URL = <span class="st">"https://jsonplaceholder.typicode.com"</span>
 
 
 
+<!-- LAB -->
+<section id="lab">
+  <div class="section-inner">
+    <h2 class="section-title">Tests en direct</h2>
+    <p class="section-sub">Sélectionnez un scénario, lancez-le — les assertions s'exécutent sur la vraie API</p>
+    <div class="lab-grid">
+      <div class="test-list" id="testList">
+        <button class="test-btn active" data-id="0" onclick="selectTest(0)">
+          <span class="test-btn-method m-get">GET</span>
+          <span class="test-btn-info">
+            <span class="test-btn-name">test_get_post_valid</span>
+            <span class="test-btn-desc">Récupère /posts/1 — vérifie status 200 et les champs JSON</span>
+          </span>
+        </button>
+        <button class="test-btn" data-id="1" onclick="selectTest(1)">
+          <span class="test-btn-method m-get">GET</span>
+          <span class="test-btn-info">
+            <span class="test-btn-name">test_get_post_not_found</span>
+            <span class="test-btn-desc">Requête sur un ID inexistant — attend un 404</span>
+          </span>
+        </button>
+        <button class="test-btn" data-id="2" onclick="selectTest(2)">
+          <span class="test-btn-method m-post">POST</span>
+          <span class="test-btn-info">
+            <span class="test-btn-name">test_create_post</span>
+            <span class="test-btn-desc">Crée un post — vérifie status 201 et l'ID retourné</span>
+          </span>
+        </button>
+        <button class="test-btn" data-id="3" onclick="selectTest(3)">
+          <span class="test-btn-method m-get">GET</span>
+          <span class="test-btn-info">
+            <span class="test-btn-name">test_users_email_valid</span>
+            <span class="test-btn-desc">Vérifie que chaque utilisateur a un email avec "@"</span>
+          </span>
+        </button>
+        <button class="test-btn" data-id="4" onclick="selectTest(4)">
+          <span class="test-btn-method m-del">DEL</span>
+          <span class="test-btn-info">
+            <span class="test-btn-name">test_delete_post</span>
+            <span class="test-btn-desc">Supprime /posts/1 — vérifie status 200 et body vide</span>
+          </span>
+        </button>
+        <button class="test-btn" data-id="5" onclick="selectTest(5)">
+          <span class="test-btn-method m-get">GET</span>
+          <span class="test-btn-info">
+            <span class="test-btn-name">test_response_time</span>
+            <span class="test-btn-desc">Mesure le temps de réponse — doit être sous 3 secondes</span>
+          </span>
+        </button>
+      </div>
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="terminal-title" id="termTitle">pytest tests/ -v</span>
+          <button class="run-btn" id="runBtn" onclick="runTest()">▶ Lancer</button>
+        </div>
+        <div class="terminal-body" id="termBody">
+          <span class="t-line t-dim">════════ sélectionne un test et clique sur Lancer ════════</span>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.75rem;color:var(--muted);margin-top:1rem;font-family:var(--mono);text-align:right">
+      API réelle : jsonplaceholder.typicode.com — requêtes fetch() en direct
+    </p>
+  </div>
+</section>
+
 <!-- AMÉLIORATIONS -->
 <section style="background: var(--surface); border-top: 1px solid var(--border);">
   <div class="section-inner">
@@ -679,6 +803,192 @@ function toggle(btn) {
   const answer = btn.nextElementSibling;
   answer.classList.toggle('open');
 }
+
+const BASE = 'https://jsonplaceholder.typicode.com';
+let currentTest = 0;
+
+const TESTS = [
+  {
+    name: 'test_get_post_valid',
+    file: 'tests/test_posts.py',
+    run: async () => {
+      const t0 = Date.now();
+      const res = await fetch(`${BASE}/posts/1`);
+      const data = await res.json();
+      const ms = Date.now() - t0;
+      const assertions = [
+        { label: `assert response.status_code == 200`, ok: res.status === 200, got: res.status },
+        { label: `assert "id" in data`, ok: 'id' in data, got: data.id },
+        { label: `assert "title" in data`, ok: 'title' in data, got: `"${data.title?.slice(0,30)}..."` },
+        { label: `assert isinstance(data["userId"], int)`, ok: Number.isInteger(data.userId), got: data.userId },
+        { label: `assert len(data["title"]) > 0`, ok: data.title?.length > 0, got: `len=${data.title?.length}` },
+      ];
+      return { assertions, ms, payload: null };
+    }
+  },
+  {
+    name: 'test_get_post_not_found',
+    file: 'tests/test_errors.py',
+    run: async () => {
+      const t0 = Date.now();
+      const res = await fetch(`${BASE}/posts/99999`);
+      const ms = Date.now() - t0;
+      const assertions = [
+        { label: `assert response.status_code == 404`, ok: res.status === 404, got: res.status },
+        { label: `assert response.elapsed < 3.0s`, ok: ms < 3000, got: `${(ms/1000).toFixed(2)}s` },
+      ];
+      return { assertions, ms, payload: null };
+    }
+  },
+  {
+    name: 'test_create_post',
+    file: 'tests/test_posts.py',
+    run: async () => {
+      const payload = { title: 'Test automatisé', body: 'Contenu du test.', userId: 1 };
+      const t0 = Date.now();
+      const res = await fetch(`${BASE}/posts`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      const ms = Date.now() - t0;
+      const assertions = [
+        { label: `assert response.status_code == 201`, ok: res.status === 201, got: res.status },
+        { label: `assert "id" in data`, ok: 'id' in data, got: data.id },
+        { label: `assert data["title"] == payload["title"]`, ok: data.title === payload.title, got: `"${data.title}"` },
+        { label: `assert data["userId"] == 1`, ok: data.userId === 1, got: data.userId },
+      ];
+      return { assertions, ms, payload };
+    }
+  },
+  {
+    name: 'test_users_email_valid',
+    file: 'tests/test_users.py',
+    run: async () => {
+      const t0 = Date.now();
+      const res = await fetch(`${BASE}/users`);
+      const data = await res.json();
+      const ms = Date.now() - t0;
+      const allHaveAt = data.every(u => u.email?.includes('@'));
+      const assertions = [
+        { label: `assert response.status_code == 200`, ok: res.status === 200, got: res.status },
+        { label: `assert len(users) == 10`, ok: data.length === 10, got: data.length },
+        { label: `assert all "@" in u["email"] for u in users`, ok: allHaveAt, got: allHaveAt ? 'tous valides' : 'email invalide détecté' },
+        { label: `assert isinstance(users, list)`, ok: Array.isArray(data), got: `list[${data.length}]` },
+      ];
+      return { assertions, ms, payload: null };
+    }
+  },
+  {
+    name: 'test_delete_post',
+    file: 'tests/test_posts.py',
+    run: async () => {
+      const t0 = Date.now();
+      const res = await fetch(`${BASE}/posts/1`, { method: 'DELETE' });
+      const data = await res.json();
+      const ms = Date.now() - t0;
+      const assertions = [
+        { label: `assert response.status_code == 200`, ok: res.status === 200, got: res.status },
+        { label: `assert data == {}`, ok: JSON.stringify(data) === '{}', got: JSON.stringify(data) },
+      ];
+      return { assertions, ms, payload: null };
+    }
+  },
+  {
+    name: 'test_response_time',
+    file: 'tests/test_errors.py',
+    run: async () => {
+      const t0 = Date.now();
+      const res = await fetch(`${BASE}/posts`);
+      const data = await res.json();
+      const ms = Date.now() - t0;
+      const assertions = [
+        { label: `assert response.status_code == 200`, ok: res.status === 200, got: res.status },
+        { label: `assert elapsed.total_seconds() < 3.0`, ok: ms < 3000, got: `${(ms/1000).toFixed(2)}s` },
+        { label: `assert len(posts) > 0`, ok: data.length > 0, got: `${data.length} posts` },
+      ];
+      return { assertions, ms, payload: null };
+    }
+  }
+];
+
+function selectTest(id) {
+  currentTest = id;
+  document.querySelectorAll('.test-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-id="${id}"]`).classList.add('active');
+  document.getElementById('termTitle').textContent = `pytest ${TESTS[id].file}::${TESTS[id].name} -v`;
+  const body = document.getElementById('termBody');
+  body.innerHTML = `<span class="t-line t-dim">prêt — clique sur Lancer pour exécuter le test</span>`;
+}
+
+async function runTest() {
+  const btn = document.getElementById('runBtn');
+  const body = document.getElementById('termBody');
+  const test = TESTS[currentTest];
+  btn.disabled = true;
+  body.innerHTML = '';
+
+  const lines = [
+    `<span class="t-line t-dim">══════════════════════════════════════════</span>`,
+    `<span class="t-line" style="color:#8a9099">platform web -- Python simulation, pytest-live</span>`,
+    `<span class="t-line t-dim">collected 1 item</span>`,
+    `<span class="t-line"> </span>`,
+    `<span class="t-line t-info">${test.file}</span>`,
+  ];
+
+  for (const l of lines) {
+    body.innerHTML += l;
+    await sleep(60);
+  }
+
+  body.innerHTML += `<span class="t-line"><span style="color:#8a9099">${test.name}</span> <span class="t-warn">RUNNING</span></span>`;
+  await sleep(300);
+
+  let result;
+  try { result = await test.run(); }
+  catch(e) {
+    body.innerHTML += `<span class="t-line t-fail">  ERREUR réseau : ${e.message}</span>`;
+    btn.disabled = false; return;
+  }
+
+  const last = body.lastElementChild;
+  if (last) last.innerHTML = `<span style="color:#8a9099">${test.name}</span>`;
+
+  if (result.payload) {
+    body.innerHTML += `<span class="t-line t-dim">  payload: ${JSON.stringify(result.payload)}</span>`;
+    await sleep(80);
+  }
+
+  let allPassed = true;
+  for (const a of result.assertions) {
+    await sleep(110);
+    const icon = a.ok ? `<span class="t-ok">  ✓</span>` : `<span class="t-fail">  ✗</span>`;
+    const gotStr = a.ok
+      ? `<span class="t-dim"> → ${a.got}</span>`
+      : `<span class="t-fail"> → got: ${a.got}</span>`;
+    body.innerHTML += `<span class="t-line">${icon} <span style="color:#c084fc">${a.label}</span>${gotStr}</span>`;
+    if (!a.ok) allPassed = false;
+  }
+
+  await sleep(150);
+  body.innerHTML += `<span class="t-line"> </span>`;
+  body.innerHTML += `<span class="t-line t-dim">══════════════════════════════════════════</span>`;
+  body.innerHTML += `<span class="t-line t-dim">  durée : ${result.ms}ms</span>`;
+  await sleep(80);
+
+  if (allPassed) {
+    body.innerHTML += `<span class="t-line"><span class="t-ok t-line">  1 passed</span> <span class="t-dim">in ${(result.ms/1000).toFixed(2)}s</span></span>`;
+    body.innerHTML += `<span class="t-line t-dim">══════════════════════════════════════════</span>`;
+  } else {
+    body.innerHTML += `<span class="t-line t-fail">  1 FAILED</span>`;
+    body.innerHTML += `<span class="t-line t-dim">══════════════════════════════════════════</span>`;
+  }
+
+  body.scrollTop = body.scrollHeight;
+  btn.disabled = false;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 </script>
 
 </body>
